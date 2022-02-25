@@ -1,26 +1,28 @@
 package com.smart.mall.web;
 
 import com.smart.mall.exception.http.NotFoundException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import com.smart.mall.model.Banner;
+import com.smart.mall.service.BannerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-
 
 @RestController
 @RequestMapping("/banner")
 @Validated
-@Api("banner")
 public class bannerController {
+    @Autowired
+    private BannerService bannerService;
 
-    @GetMapping("/test")
-    @ApiOperation("test")
-    public void test(){
-        throw new RuntimeException();
+    @GetMapping("/name/{name}")
+    public Banner getByName(@PathVariable @NotBlank String name){
+        Banner banner = this.bannerService.getByName(name);
+        if(banner == null){
+            throw new NotFoundException(2004);
+        }
+        return banner;
     }
+
 }
