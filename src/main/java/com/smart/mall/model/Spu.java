@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +29,18 @@ public class Spu extends BaseEntity{
     private String tags;
     private Boolean isTest;
     private String forThemeImg;
+
+    @OneToMany
+    @JoinColumn(name = "spuId")
+    private List<Sku> skuList;
+
+    @OneToMany
+    @JoinColumn(name = "spuId")
+    private List<SpuImg> spuImgList;
+
+    @OneToMany
+    @JoinColumn(name = "spuId")
+    private List<SpuDetailImg> spuDetailImgList;
 
 
 }
