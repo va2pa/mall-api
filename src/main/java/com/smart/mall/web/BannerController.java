@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @RestController
 @RequestMapping("/banner")
 @Validated
-public class bannerController {
+public class BannerController {
     @Autowired
     private BannerService bannerService;
 
@@ -20,7 +20,7 @@ public class bannerController {
     public Banner getByName(@PathVariable @NotBlank String name){
         Banner banner = this.bannerService.getByName(name);
         if(banner == null){
-            throw new NotFoundException(2004);
+            throw new NotFoundException(4004);
         }
         return banner;
     }
