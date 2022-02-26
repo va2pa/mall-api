@@ -1,5 +1,10 @@
 package com.smart.mall.vo;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class SpuPureVO {
     private Long id;
     private String title;
