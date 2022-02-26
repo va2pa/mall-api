@@ -6,7 +6,7 @@ public class CommonUtil {
     public static PageCounter convertToPageParameter(Integer start, Integer count){
         return PageCounter.builder()
                 .page(start / count)
-                .count(count)
+                .size(count)
                 .build();
     }
 }

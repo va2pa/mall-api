@@ -9,5 +9,5 @@ import lombok.Setter;
 @Builder
 public class PageCounter {
     private Integer page;
-    private Integer count;
+    private Integer size;
 }
