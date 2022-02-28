@@ -5,6 +5,7 @@ import com.smart.mall.util.GenergicAndJson;
 import com.smart.mall.util.ListAndJson;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@Where(clause = "delete_time is null")
 public class Sku {
     @Id
     private Long id;

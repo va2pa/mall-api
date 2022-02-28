@@ -12,10 +12,12 @@ import java.util.Objects;
 @Setter
 @Entity
 @Where(clause = "delete_time is null")
-public class SpuImg {
+public class GridCategory extends BaseEntity{
     @Id
     private Long id;
+    private String title;
     private String img;
-    private Long spuId;
-
+    private String name;
+    private Long categoryId;
+    private Long rootCategoryId;
 }

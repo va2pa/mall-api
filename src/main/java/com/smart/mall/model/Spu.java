@@ -2,6 +2,7 @@ package com.smart.mall.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Where(clause = "delete_time is null and online = 1")
 public class Spu extends BaseEntity{
     @Id
     private Long id;
