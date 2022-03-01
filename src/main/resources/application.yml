@@ -8,3 +8,8 @@ spring:
     property-naming-strategy: SNAKE_CASE
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: true
+
+wx:
+  appid: wx4761bdc9c8684ce9
+  appsecret: c28f45edec9870198d54a7cab65376bb
+  code2session: https://api.weixin.qq.com/sns/jscode2session?appid={0}&secret={1}&js_code={2}&grant_type=authorization_code

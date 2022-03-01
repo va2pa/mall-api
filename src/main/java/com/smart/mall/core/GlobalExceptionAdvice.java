@@ -73,7 +73,7 @@ public class GlobalExceptionAdvice {
     @ResponseBody
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public UnifyResponse handleMethodArgumentNotValidException(HttpServletRequest req, MethodArgumentNotValidException e){
-        int code = 9988;
+        int code = 9998;
         StringBuffer stringBuffer = new StringBuffer();
         e.getBindingResult().getAllErrors().forEach(t -> {
             if(t instanceof FieldError){

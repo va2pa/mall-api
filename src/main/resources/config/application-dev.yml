@@ -11,3 +11,8 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+mall:
+  security:
+    jwt-key: hellolitemall
+    token-expired-in: 86400000
