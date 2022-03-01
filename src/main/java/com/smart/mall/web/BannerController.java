@@ -1,5 +1,6 @@
 package com.smart.mall.web;
 
+import com.smart.mall.core.interceptors.ScopeLevel;
 import com.smart.mall.exception.http.NotFoundException;
 import com.smart.mall.model.Banner;
 import com.smart.mall.service.BannerService;
