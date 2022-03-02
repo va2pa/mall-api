@@ -1,9 +1,14 @@
 package com.smart.mall.core.interceptors;
 
 import com.auth0.jwt.interfaces.Claim;
+import com.smart.mall.core.LocalUser;
 import com.smart.mall.exception.http.ForbiddenException;
 import com.smart.mall.exception.http.UnAuthenticated;
+import com.smart.mall.model.User;
+import com.smart.mall.service.UserService;
 import com.smart.mall.util.JwtToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,6 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public class PermissionInterceptor implements HandlerInterceptor {
+    @Autowired
+    private UserService userService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         ScopeLevel scopeLevel = getScopeLevel(handler);
@@ -31,7 +39,15 @@ public class PermissionInterceptor implements HandlerInterceptor {
                 .orElseThrow(() -> new UnAuthenticated(1004));
         //校验token权限是否大于api访问权限
         checkPermission(scopeLevel, claimMap);
+        //利用token中的uid查询user存入LocalUser
+        setToLocalUser(claimMap);
         return true;
+    }
+
+    private void setToLocalUser(Map<String, Claim> claimMap) {
+        Long uid = claimMap.get("uid").asLong();
+        User user = this.userService.getUserById(uid);
+        LocalUser.setUser(user);
     }
 
     private void checkPermission(ScopeLevel scopeLevel, Map<String, Claim> claimMap){
@@ -56,6 +72,6 @@ public class PermissionInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
+        LocalUser.clear();
     }
 }

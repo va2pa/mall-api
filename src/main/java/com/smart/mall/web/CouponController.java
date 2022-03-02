@@ -1,15 +1,13 @@
 package com.smart.mall.web;
 
+import com.smart.mall.core.LocalUser;
+import com.smart.mall.core.interceptors.ScopeLevel;
 import com.smart.mall.model.Coupon;
 import com.smart.mall.service.CouponService;
 import com.smart.mall.vo.CouponPureVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,5 +40,12 @@ public class CouponController {
         return coupons.stream()
                 .map(CouponPureVO::new)
                 .collect(Collectors.toList());
+    }
+
+    @ScopeLevel
+    @PostMapping("/collect/{id}")
+    public List<CouponPureVO> collectCoupon(@PathVariable Long id){
+        Long uid = LocalUser.getUser().getId();
+        return null;
     }
 }
