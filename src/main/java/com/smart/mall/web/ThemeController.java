@@ -3,15 +3,13 @@ package com.smart.mall.web;
 import com.smart.mall.exception.http.NotFoundException;
 import com.smart.mall.model.Theme;
 import com.smart.mall.service.ThemeService;
-import com.smart.mall.vo.SpuPureVO;
 import com.smart.mall.vo.ThemePureVO;
-import com.smart.mall.vo.ThemeWithSpuVO;
+import com.smart.mall.vo.ThemeSpuVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,9 +29,9 @@ public class ThemeController {
     }
 
     @GetMapping("/name/{name}/with_spu")
-    public ThemeWithSpuVO getThemeByNameWithSpu(@PathVariable String name){
+    public ThemeSpuVO getThemeByNameWithSpu(@PathVariable String name){
         Theme theme = this.themeService.getThemeByNameWithSpu(name)
                                     .orElseThrow(() -> new NotFoundException(4008));
-        return new ThemeWithSpuVO(theme);
+        return new ThemeSpuVO(theme);
     }
 }

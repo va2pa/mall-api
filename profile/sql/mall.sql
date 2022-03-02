@@ -52,13 +52,13 @@ CREATE TABLE `activity_category`  (
 -- ----------------------------
 -- Table structure for activity_coupon
 -- ----------------------------
-DROP TABLE IF EXISTS `activity_coupon`;
-CREATE TABLE `activity_coupon`  (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `coupon_id` int(10) UNSIGNED NOT NULL,
-  `activity_id` int(11) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+-- DROP TABLE IF EXISTS `activity_coupon`;
+-- CREATE TABLE `activity_coupon`  (
+--   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+--   `coupon_id` int(10) UNSIGNED NOT NULL,
+--   `activity_id` int(11) UNSIGNED NOT NULL,
+--   PRIMARY KEY (`id`) USING BTREE
+-- ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for activity_spu

@@ -2,11 +2,13 @@ package com.smart.mall.vo;
 
 import com.smart.mall.model.Theme;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ThemePureVO {
     private Long id;
     private String title;
