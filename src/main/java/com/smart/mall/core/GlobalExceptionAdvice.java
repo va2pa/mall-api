@@ -56,7 +56,6 @@ public class GlobalExceptionAdvice {
         HttpStatus httpStatus = HttpStatus.resolve(e.getHttpStatusCode());
 
         String message = responseCodeConfiguration.getMessage(e.getCode());
-        System.out.println(message);
         String RequestURL = req.getMethod() + " " + req.getRequestURI();
         UnifyResponse resp = new UnifyResponse(e.getCode(), message, RequestURL);
         return new ResponseEntity<UnifyResponse>(resp, httpStatus);

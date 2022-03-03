@@ -32,7 +32,7 @@ public class WxAuthenticationService {
         Map<String, Object> session = code2session(code);
         String openid = (String)session.get("openid");
         if(openid == null){
-            throw new ParameterException(5002);
+            throw new ParameterException(5004);
         }
         User user = this.userRepository.findByOpenid(openid);
         if(user == null){

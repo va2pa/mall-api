@@ -15,4 +15,5 @@ public class ActivityService{
     public Optional<Activity> getByName(String name){
         return this.activityRepository.findByName(name);
     }
+
 }

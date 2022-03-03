@@ -1,6 +1,7 @@
 package com.smart.mall.web;
 
 import com.smart.mall.core.LocalUser;
+import com.smart.mall.core.UnifyResponse;
 import com.smart.mall.core.interceptors.ScopeLevel;
 import com.smart.mall.model.Coupon;
 import com.smart.mall.service.CouponService;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/coupon")
@@ -25,9 +25,7 @@ public class CouponController {
     @GetMapping("/by/category/{cid}")
     public List<CouponPureVO> getCouponsByCategory(@PathVariable Long cid){
         List<Coupon> coupons = this.couponService.getCouponsByCategory(cid);
-        return coupons.stream()
-                .map(CouponPureVO::new)
-                .collect(Collectors.toList());
+        return CouponPureVO.getList(coupons);
     }
 
     /**
@@ -37,15 +35,14 @@ public class CouponController {
     @GetMapping("/whole_store")
     public List<CouponPureVO> getWholeStore(){
         List<Coupon> coupons = this.couponService.getWholeStore();
-        return coupons.stream()
-                .map(CouponPureVO::new)
-                .collect(Collectors.toList());
+        return CouponPureVO.getList(coupons);
     }
 
     @ScopeLevel
-    @PostMapping("/collect/{id}")
-    public List<CouponPureVO> collectCoupon(@PathVariable Long id){
+    @PostMapping("/collect/{couponId}")
+    public void collectCoupon(@PathVariable Long couponId){
         Long uid = LocalUser.getUser().getId();
-        return null;
+        this.couponService.collectCoupon(uid, couponId);
+        UnifyResponse.createSuccess();
     }
 }

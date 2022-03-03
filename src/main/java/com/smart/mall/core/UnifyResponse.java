@@ -1,25 +1,25 @@
 package com.smart.mall.core;
 
+import com.smart.mall.exception.CreateSuccess;
+import com.smart.mall.exception.DeleteSuccess;
+import com.smart.mall.exception.UpdateSuccess;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class UnifyResponse{
     private int code;
     private String message;
     private String requestURL;
 
-    public UnifyResponse(int code, String message, String requestURL) {
-        this.code = code;
-        this.message = message;
-        this.requestURL = requestURL;
+    public static CreateSuccess createSuccess(){
+        throw new CreateSuccess(0);
     }
-
-    public int getCode() {
-        return code;
+    public static DeleteSuccess deleteSuccess(){
+        throw new DeleteSuccess(0);
     }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getrequestURL() {
-        return requestURL;
+    public static UpdateSuccess updateSuccess(){
+        throw new UpdateSuccess(0);
     }
 }
