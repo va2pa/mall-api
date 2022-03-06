@@ -6,6 +6,7 @@ import com.smart.mall.dto.SkuInfoDTO;
 import com.smart.mall.exception.http.NotFoundException;
 import com.smart.mall.exception.http.ParameterException;
 import com.smart.mall.logic.CouponCheck;
+import com.smart.mall.logic.OrderCheck;
 import com.smart.mall.model.Coupon;
 import com.smart.mall.model.Sku;
 import com.smart.mall.model.UserCoupon;
@@ -33,13 +34,14 @@ public class OrderService {
     @Value("${mall.order.max-sku-limit}")
     private Integer maxSkuLimit;
 
-    public void isOk(Long uid, OrderDTO orderDTO){
+    public OrderCheck isOk(Long uid, OrderDTO orderDTO){
         List<Long> skuIdList = orderDTO.getSkuInfoList().stream()
                 .map(SkuInfoDTO::getId)
                 .collect(Collectors.toList());
         List<Sku> skuList = skuRepository.findAllByIdIn(skuIdList);
         Long couponId = orderDTO.getCouponId();
         //该笔订单是否使用了优惠劵，如果有，则校验优惠劵
+        CouponCheck couponCheck = null;
         if(couponId != null){
             Coupon coupon = couponRepository.findById(couponId)
                     .orElseThrow(() -> new NotFoundException(6004));
@@ -47,9 +49,11 @@ public class OrderService {
             if (!myAvailable.contains(coupon)){
                 throw new ParameterException(6016);
             }
-            CouponCheck couponCheck = new CouponCheck(coupon, moneyDiscount);
+            couponCheck = new CouponCheck(coupon, moneyDiscount);
         }
-
-
+        OrderCheck orderCheck = new OrderCheck(
+                orderDTO, skuList, couponCheck,  this.maxSkuLimit);
+        orderCheck.isOk();
+        return orderCheck;
     }
 }

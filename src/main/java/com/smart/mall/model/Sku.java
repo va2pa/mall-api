@@ -1,5 +1,6 @@
 package com.smart.mall.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.smart.mall.util.GenergicAndJson;
 import com.smart.mall.util.ListAndJson;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -44,5 +46,12 @@ public class Sku {
     public BigDecimal getActualPrice(){
         return this.discountPrice != null
                 ? this.discountPrice : this.price;
+    }
+
+    @JsonIgnore
+    public List<String> getSpecValueList() {
+        return this.getSpecs().stream()
+                .map(Spec::getValue)
+                .collect(Collectors.toList());
     }
 }
