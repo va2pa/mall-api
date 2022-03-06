@@ -9,7 +9,6 @@ import com.smart.mall.model.Coupon;
 import com.smart.mall.service.CouponService;
 import com.smart.mall.vo.CouponCategoryVO;
 import com.smart.mall.vo.CouponPureVO;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

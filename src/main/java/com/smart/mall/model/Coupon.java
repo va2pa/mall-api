@@ -1,5 +1,6 @@
 package com.smart.mall.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
@@ -11,8 +12,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Where(clause = "delete_time is null")
 public class Coupon extends BaseEntity{

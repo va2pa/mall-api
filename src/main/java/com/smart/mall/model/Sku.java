@@ -40,4 +40,9 @@ public class Sku {
     public void setSpecs(List<Spec> specs){
         this.specs = GenergicAndJson.convertToString(specs);
     }
+
+    public BigDecimal getActualPrice(){
+        return this.discountPrice != null
+                ? this.discountPrice : this.price;
+    }
 }
