@@ -16,7 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Where(clause = "delete_time is null")
+@Where(clause = "delete_time is null and online = 1")
 public class Sku {
     @Id
     private Long id;

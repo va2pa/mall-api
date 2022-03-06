@@ -16,3 +16,5 @@ mall:
   security:
     jwt-key: hellolitemall
     token-expired-in: 86400000
+  order:
+    max-sku-limit: 9999

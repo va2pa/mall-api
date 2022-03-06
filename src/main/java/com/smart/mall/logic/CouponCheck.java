@@ -13,6 +13,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 职责: 校验优惠劵数据:
+ *        1. 优惠劵是否在可用时间内
+ *        2. 优惠劵适用分类金额是否满足优惠劵使用门槛
+ *        3. 使用优惠劵后的服务器最终价格是否和前端一致
+ *
+ */
 public class CouponCheck {
     private Coupon coupon;
     private MoneyDiscount moneyDiscount;
@@ -34,7 +41,7 @@ public class CouponCheck {
     }
 
     /**
-     * 计算服务器使用优惠劵后的最终价格是否和前端一致
+     * 计算使用优惠劵后的服务器最终价格是否和前端一致
      * @param orderFinalTotalPrice
      * @param serverTotalPrice
      */
@@ -62,7 +69,7 @@ public class CouponCheck {
     }
 
     /**
-     * 订单优惠劵对应分类金额是否满足满减优惠劵门槛
+     * 优惠劵适用分类金额是否满足优惠劵使用门槛
      * @param skuOrderBOList
      * @param serverTotalPrice
      */

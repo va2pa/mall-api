@@ -13,6 +13,7 @@ import com.smart.mall.repository.CouponRepository;
 import com.smart.mall.repository.SkuRepository;
 import com.smart.mall.repository.UserCouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,6 +30,8 @@ public class OrderService {
     private UserCouponRepository userCouponRepository;
     @Autowired
     private MoneyDiscount moneyDiscount;
+    @Value("${mall.order.max-sku-limit}")
+    private Integer maxSkuLimit;
 
     public void isOk(Long uid, OrderDTO orderDTO){
         List<Long> skuIdList = orderDTO.getSkuInfoList().stream()

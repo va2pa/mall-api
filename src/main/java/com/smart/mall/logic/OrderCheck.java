@@ -1,0 +1,94 @@
+package com.smart.mall.logic;
+
+import com.smart.mall.bo.SkuOrderBO;
+import com.smart.mall.dto.OrderDTO;
+import com.smart.mall.dto.SkuInfoDTO;
+import com.smart.mall.exception.http.ParameterException;
+import com.smart.mall.model.Sku;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 职责: 1. 校验订单数据:
+ *          1. sku是否已下架
+ *          2. sku是否售罄
+ *          3. sku是否超卖
+ *          4. sku是否超出最大购买数量
+ *          5. 前端总价格是否与服务器一致
+ *          6. 优惠劵校验
+ *
+ */
+public class OrderCheck {
+    private OrderDTO orderDTO;
+    private List<Sku> serverSkuList;
+    private CouponCheck couponCheck;
+    private Integer maxSkuLimit;
+
+    public OrderCheck(OrderDTO orderDTO, List<Sku> serverSkuList, CouponCheck couponCheck, Integer maxSkuLimit) {
+        this.orderDTO = orderDTO;
+        this.serverSkuList = serverSkuList;
+        this.couponCheck = couponCheck;
+        this.maxSkuLimit = maxSkuLimit;
+    }
+
+    public void isOk(){
+        BigDecimal serverTotalPrice = new BigDecimal("0");
+        List<SkuOrderBO> skuOrderBOList = new ArrayList<>();
+        for(int i = 0;i < this.serverSkuList.size();i ++){
+            Sku sku = this.serverSkuList.get(i);
+            SkuInfoDTO skuInfoDTO = this.orderDTO.getSkuInfoList().get(i);
+            skuNotOnSale();
+            this.skuNotOnSale();
+            this.containsSoldOutSku(sku);
+            this.beyondSkuStock(skuInfoDTO, sku);
+            this.beyondSkuMaxLimit(skuInfoDTO);
+
+            SkuOrderBO skuOrderBO = new SkuOrderBO(sku, skuInfoDTO);
+            skuOrderBOList.add(skuOrderBO);
+            serverTotalPrice = serverTotalPrice.add(skuOrderBO.getTotalPrice());
+        }
+        totalPriceIsOk(this.orderDTO.getTotalPrice(), serverTotalPrice);
+        if(this.orderDTO.getCouponId() != null){
+            this.couponCheck.inTimeLine();
+            this.couponCheck.canBeUsed(skuOrderBOList, serverTotalPrice);
+            this.couponCheck.finalTotalPriceIsOk(this.orderDTO.getFinalTotalPrice(), serverTotalPrice);
+        }
+    }
+
+    /**
+     * 前端总价格是否与服务器一致
+     * @param totalPrice
+     * @param serverTotalPrice
+     */
+    private void totalPriceIsOk(BigDecimal totalPrice, BigDecimal serverTotalPrice){
+        if(totalPrice.compareTo(serverTotalPrice) != 0){
+            throw new ParameterException(7005);
+        }
+    }
+
+    private void skuNotOnSale(){
+        if (this.serverSkuList.size() != this.orderDTO.getSkuInfoList().size()){
+            throw new ParameterException(7504);
+        }
+    }
+
+    private void containsSoldOutSku(Sku sku){
+        if (sku.getStock() <= 0){
+            throw new ParameterException(7506);
+        }
+    }
+
+    private void beyondSkuStock(SkuInfoDTO skuInfoDTO, Sku sku){
+        if (skuInfoDTO.getCount() > sku.getStock()){
+            throw new ParameterException(7508);
+        }
+    }
+
+    private void beyondSkuMaxLimit(SkuInfoDTO skuInfoDTO){
+        if (skuInfoDTO.getCount() > this.maxSkuLimit){
+            throw new ParameterException(7510);
+        }
+    }
+}
