@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface SkuRepository extends JpaRepository<Sku, Long> {
-    List<Sku> findAllByIdIn(List<Long> ids);
+    List<Sku> findAllByIdInOrderById(List<Long> ids);
 
     @Modifying
     @Query("update Sku s set s.stock = s.stock - :quantity\n" +

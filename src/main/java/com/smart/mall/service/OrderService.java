@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,9 +39,14 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Value("${mall.order.max-sku-limit}")
     private Integer maxSkuLimit;
+    @Value("${mall.order.pay-time-limit}")
+    private Integer payTimeLimit;
 
     @Transactional
     public Long placeOrder(long uid, OrderDTO orderDTO, OrderCheck orderCheck) {
+        Calendar now = Calendar.getInstance();
+        Calendar expireTime = (Calendar)now.clone();
+        expireTime.add(Calendar.SECOND, this.payTimeLimit);
         Order order = Order.builder()
                 .orderNo(OrderUtil.makeOrderNo())
                 .userId(uid)
@@ -49,6 +55,8 @@ public class OrderService {
                 .snapImg(orderCheck.getSnapImg())
                 .snapTitle(orderCheck.getSnapTitle())
                 .status(OrderStatus.UNPAID.value())
+                .placedTime(now.getTime())
+                .expiredTime(expireTime.getTime())
                 .build();
         order.setSnapAddress(orderDTO.getAddress());
         order.setSnapItems(orderCheck.getOrderSkuList());
@@ -80,7 +88,7 @@ public class OrderService {
         List<Long> skuIdList = orderDTO.getSkuInfoList().stream()
                 .map(SkuInfoDTO::getId)
                 .collect(Collectors.toList());
-        List<Sku> skuList = skuRepository.findAllByIdIn(skuIdList);
+        List<Sku> skuList = skuRepository.findAllByIdInOrderById(skuIdList);
         Long couponId = orderDTO.getCouponId();
         //该笔订单是否使用了优惠劵，如果有，则校验优惠劵
         CouponCheck couponCheck = null;

@@ -10,6 +10,8 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -59,6 +61,13 @@ public class OrderCheck {
     public void isOk(){
         BigDecimal serverTotalPrice = new BigDecimal("0");
         List<SkuOrderBO> skuOrderBOList = new ArrayList<>();
+        //保证列表遍历时前后端对应同一个sku
+        Collections.sort(this.orderDTO.getSkuInfoList(), new Comparator<SkuInfoDTO>() {
+            @Override
+            public int compare(SkuInfoDTO o1, SkuInfoDTO o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
         for(int i = 0;i < this.serverSkuList.size();i ++){
             Sku sku = this.serverSkuList.get(i);
             SkuInfoDTO skuInfoDTO = this.orderDTO.getSkuInfoList().get(i);
