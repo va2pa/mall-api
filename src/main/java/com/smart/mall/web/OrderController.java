@@ -23,7 +23,7 @@ public class OrderController {
     public OrderIdVO placeOrder(@RequestBody OrderDTO orderDTO){
         long uid = LocalUser.getUser().getId();
         OrderCheck orderCheck = this.orderService.isOk(uid, orderDTO);
-
-        return null;
+        Long orderId = this.orderService.placeOrder(uid, orderDTO, orderCheck);
+        return new OrderIdVO(orderId);
     }
 }

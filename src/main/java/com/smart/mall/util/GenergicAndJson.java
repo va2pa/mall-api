@@ -10,14 +10,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GenergicAndJson {
-
     private static ObjectMapper mapper;
-
     @Autowired
     public void setMapper(ObjectMapper mapper){
         GenergicAndJson.mapper = mapper;
     }
-    public static <T> String convertToString(T object) {
+
+    public static <T> String convertToJson(T object) {
         try {
             return mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {

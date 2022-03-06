@@ -3,16 +3,13 @@ package com.smart.mall.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.smart.mall.util.GenergicAndJson;
-import com.smart.mall.util.ListAndJson;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
@@ -40,7 +37,7 @@ public class Sku {
     }
 
     public void setSpecs(List<Spec> specs){
-        this.specs = GenergicAndJson.convertToString(specs);
+        this.specs = GenergicAndJson.convertToJson(specs);
     }
 
     public BigDecimal getActualPrice(){

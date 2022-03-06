@@ -18,3 +18,4 @@ mall:
     token-expired-in: 86400000
   order:
     max-sku-limit: 9999
+    year-codes: A,B,C,D,E,F,G,H,I

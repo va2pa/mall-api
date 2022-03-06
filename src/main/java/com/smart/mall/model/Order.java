@@ -1,5 +1,8 @@
 package com.smart.mall.model;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.smart.mall.dto.OrderAddressDTO;
+import com.smart.mall.util.GenergicAndJson;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
@@ -10,6 +13,7 @@ import javax.persistence.Table;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -27,22 +31,38 @@ public class Order extends BaseEntity {
     private Long id;
     private String orderNo;
     private Long userId;
-    private BigDecimal totalPrice;
     private Long totalCount;
+    private BigDecimal totalPrice;
+    private BigDecimal finalTotalPrice;
     private String snapImg;
     private String snapTitle;
+    private String snapItems;
+    private String snapAddress;
+    private Integer status;
     private Date expiredTime;
     private Date placedTime;
-
-    private String snapItems;
-
-    private String snapAddress;
-
     private String prepayId;
-    private BigDecimal finalTotalPrice;
-    private Integer status;
 
+    public List<OrderSku> getSnapItems() {
+        return GenergicAndJson.convertToObject(this.snapItems, new TypeReference<List<OrderSku>>() {
+        });
+    }
 
+    public void setSnapItems(List<OrderSku> orderSkuList) {
+        this.snapItems = GenergicAndJson.convertToJson(orderSkuList);
+    }
+
+    public OrderAddressDTO getSnapAddress() {
+        if (this.snapAddress == null){
+            return null;
+        }
+        return GenergicAndJson.convertToObject(this.snapAddress, new TypeReference<OrderAddressDTO>() {
+        });
+    }
+
+    public void setSnapAddress(OrderAddressDTO orderAddressDTO) {
+        this.snapAddress = GenergicAndJson.convertToJson(orderAddressDTO);
+    }
 
 }
 
