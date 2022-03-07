@@ -15,14 +15,20 @@ import com.smart.mall.repository.OrderRepository;
 import com.smart.mall.repository.SkuRepository;
 import com.smart.mall.repository.UserCouponRepository;
 import com.smart.mall.util.OrderUtil;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +47,27 @@ public class OrderService {
     private Integer maxSkuLimit;
     @Value("${mall.order.pay-time-limit}")
     private Integer payTimeLimit;
+
+    public Optional<Order> getDetail(Long oid, Long uid) {
+        return this.orderRepository.findFirstByIdAndUserId(oid, uid);
+    }
+
+    public Page<Order> getByStatus(Integer status, Integer page, Integer size, Long uid){
+        if (status == OrderStatus.UNPAID.value() ||status == OrderStatus.CANCELED.value()){
+            throw new ParameterException(7010);
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
+        if (status == OrderStatus.All.value()){
+            return orderRepository.findByUserId(uid, pageable);
+        }
+        return orderRepository.findByStatusAndUserId(status, uid, pageable);
+    }
+
+    public Page<Order> getUnpaid(Integer page, Integer size, Long uid){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
+        return orderRepository.findByStatusAndExpiredTimeGreaterThanAndUserId(
+                OrderStatus.UNPAID.value(),new Date(), uid, pageable);
+    }
 
     @Transactional
     public Long placeOrder(long uid, OrderDTO orderDTO, OrderCheck orderCheck) {
@@ -106,6 +133,7 @@ public class OrderService {
         orderCheck.isOk();
         return orderCheck;
     }
+
 
 
 }
