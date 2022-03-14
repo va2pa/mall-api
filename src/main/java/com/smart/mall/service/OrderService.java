@@ -1,5 +1,6 @@
 package com.smart.mall.service;
 
+import com.smart.mall.bo.OrderMessageBO;
 import com.smart.mall.core.enumeration.OrderStatus;
 import com.smart.mall.core.money.MoneyDiscount;
 import com.smart.mall.dto.OrderDTO;
@@ -7,6 +8,7 @@ import com.smart.mall.dto.SkuInfoDTO;
 import com.smart.mall.exception.http.ForbiddenException;
 import com.smart.mall.exception.http.NotFoundException;
 import com.smart.mall.exception.http.ParameterException;
+import com.smart.mall.exception.http.ServerErrorException;
 import com.smart.mall.logic.CouponCheck;
 import com.smart.mall.logic.OrderCheck;
 import com.smart.mall.model.*;
@@ -15,13 +17,13 @@ import com.smart.mall.repository.OrderRepository;
 import com.smart.mall.repository.SkuRepository;
 import com.smart.mall.repository.UserCouponRepository;
 import com.smart.mall.util.OrderUtil;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +50,29 @@ public class OrderService {
     private Integer maxSkuLimit;
     @Value("${mall.order.pay-time-limit}")
     private Integer payTimeLimit;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    /**
+     * 1. 设置订单状态为已取消（可选）
+     * 2. 归还该订单sku库存
+     * @param oid
+     */
+    @Transactional
+    public void cancel(long oid) {
+        if(oid <= 0){
+            throw new ServerErrorException(4016);
+        }
+        Order order = orderRepository.findById(oid)
+                .orElseThrow(() -> new ServerErrorException(4016));
+        int res = orderRepository.cancelOrder(oid);
+        if(res != 1){
+            return;
+        }
+        order.getSnapItems().forEach(s -> {
+            skuRepository.recoverStock(s.getId(),s.getCount().longValue());
+        });
+    }
 
     public Optional<Order> getDetail(Long oid, Long uid) {
         return this.orderRepository.findFirstByIdAndUserId(oid, uid);
@@ -89,10 +115,22 @@ public class OrderService {
         order.setSnapItems(orderCheck.getOrderSkuList());
         orderRepository.save(order);
         reduceStock(orderCheck.getOrderSkuList());
+        long couponId = -1;
         if (orderDTO.getCouponId() != null){
             writeOffCoupon(orderDTO.getCouponId(), uid, order.getId());
+            couponId = orderDTO.getCouponId();
         }
+        sendToRedis(order.getId(), uid, couponId);
         return order.getId();
+    }
+
+    private void sendToRedis(long oid, long uid, long couponId){
+        String key = oid + "," + uid + "," + couponId;
+        try{
+            stringRedisTemplate.opsForValue().set(key,"",this.payTimeLimit, TimeUnit.SECONDS);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void writeOffCoupon(Long couponId, long uid, Long orderId) {
@@ -133,7 +171,4 @@ public class OrderService {
         orderCheck.isOk();
         return orderCheck;
     }
-
-
-
 }

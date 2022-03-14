@@ -5,6 +5,8 @@ import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.Optional;
@@ -17,4 +19,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findByStatusAndUserId(Integer status,  Long uid, Pageable pageable);
 
     Optional<Order> findFirstByIdAndUserId(Long oid, Long uid);
+
+    @Modifying
+    @Query("update Order o \n" +
+            "set o.status = 5 \n" +
+            "where o.status = 1\n" +
+            "and o.id = :oid")
+    int cancelOrder(Long oid);
 }

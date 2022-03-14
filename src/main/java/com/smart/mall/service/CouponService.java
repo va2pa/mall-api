@@ -1,17 +1,23 @@
 package com.smart.mall.service;
 
+import com.smart.mall.bo.OrderMessageBO;
 import com.smart.mall.core.enumeration.CouponStatus;
+import com.smart.mall.core.enumeration.OrderStatus;
 import com.smart.mall.exception.http.NotFoundException;
 import com.smart.mall.exception.http.ParameterException;
+import com.smart.mall.exception.http.ServerErrorException;
 import com.smart.mall.model.Activity;
 import com.smart.mall.model.Coupon;
+import com.smart.mall.model.Order;
 import com.smart.mall.model.UserCoupon;
 import com.smart.mall.repository.ActivityRepository;
 import com.smart.mall.repository.CouponRepository;
+import com.smart.mall.repository.OrderRepository;
 import com.smart.mall.repository.UserCouponRepository;
 import com.smart.mall.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -20,12 +26,28 @@ import java.util.List;
 public class CouponService {
     @Autowired
     private CouponRepository couponRepository;
-
     @Autowired
     private ActivityRepository activityRepository;
-
     @Autowired
     private UserCouponRepository userCouponRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Transactional
+    public void returnBack(OrderMessageBO orderMessageBO){
+        Long oid = orderMessageBO.getOrderId();
+        Long uid = orderMessageBO.getUserId();
+        Long couponId = orderMessageBO.getCouponId();
+        if (couponId == -1){
+            return;
+        }
+        Order order = orderRepository.findFirstByIdAndUserId(oid, uid)
+                .orElseThrow(() -> new RuntimeException());
+        if (order.getStatus().equals(OrderStatus.UNPAID.value())
+            || order.getStatus().equals(OrderStatus.CANCELED.value())){
+            this.userCouponRepository.returnBack(couponId, uid);
+        }
+    }
 
     public List<Coupon> getCouponsByCategory(Long cid){
         return this.couponRepository.findByCategory(cid, new Date());

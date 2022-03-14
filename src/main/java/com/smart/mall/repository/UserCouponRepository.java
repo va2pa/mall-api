@@ -22,4 +22,13 @@ public interface UserCouponRepository extends JpaRepository<UserCoupon, Long> {
             "and c.start_time < :now\n" +
             "and c.end_time > :now", nativeQuery = true)
     int writeOffCoupon(Long couponId, Long uid, Long orderId, Date now);
+
+    @Modifying
+    @Query("update UserCoupon uc\n" +
+            "set uc.status = 1, uc.orderId = null \n" +
+            "where uc.couponId = :couponId\n" +
+            "and uc.userId = :uid\n" +
+            "and uc.orderId is not null\n" +
+            "and uc.status = 2")
+    int returnBack(Long couponId, Long uid);
 }
