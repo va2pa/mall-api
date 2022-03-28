@@ -1,1 +1,1 @@
-![mall-api](https://git.acwing.com/wide/image/-/blob/master/mall-api.png)
+![mall-api](https://git.acwing.com/wide/image/-/raw/master/mall-api.png)
