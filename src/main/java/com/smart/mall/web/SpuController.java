@@ -6,7 +6,9 @@ import com.smart.mall.bo.PageCounter;
 import com.smart.mall.exception.http.NotFoundException;
 import com.smart.mall.model.Banner;
 import com.smart.mall.model.Spu;
+import com.smart.mall.model.SpuExplain;
 import com.smart.mall.service.BannerService;
+import com.smart.mall.service.SpuExplainService;
 import com.smart.mall.service.SpuService;
 import com.smart.mall.util.CommonUtil;
 import com.smart.mall.vo.PagingDozer;
@@ -27,6 +29,8 @@ import java.util.List;
 public class SpuController {
     @Autowired
     private SpuService spuService;
+    @Autowired
+    private SpuExplainService spuExplainService;
 
     @GetMapping("/id/{id}/detail")
     public Spu getDetail(@PathVariable @Positive Long id){
@@ -52,5 +56,10 @@ public class SpuController {
         PageCounter pageCounter = CommonUtil.convertToPageParameter(start, count);
         Page<Spu> page = this.spuService.getByCategory(cid, isRoot, pageCounter.getPage(), pageCounter.getSize());
         return new PagingDozer<>(page, SpuPureVO.class);
+    }
+
+    @GetMapping("/explain")
+    public List<SpuExplain> getSpuExplain(){
+        return spuExplainService.getSpuExplain();
     }
 }

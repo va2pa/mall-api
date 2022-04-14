@@ -623,4 +623,16 @@ CREATE TABLE `user_coupon`  (
   UNIQUE INDEX `uni_user_coupon`(`user_id`, `coupon_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 43 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
+DROP TABLE IF EXISTS `spu_explain`;
+CREATE TABLE `spu_explain`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `spu_id` int(10) UNSIGNED NULL DEFAULT NULL,
+  `index` int(10) UNSIGNED NOT NULL,
+  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `delete_time` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;
