@@ -1,12 +1,16 @@
 package com.smart.mall.vo;
 
 import com.smart.mall.model.Spu;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SpuPureVO {
     private Long id;
     private String title;
