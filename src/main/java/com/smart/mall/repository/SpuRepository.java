@@ -11,4 +11,6 @@ public interface SpuRepository extends JpaRepository<Spu, Long> {
     Page<Spu> findByCategoryId(Long cid, Pageable pageable);
 
     Page<Spu> findByRootCategoryId(Long cid, Pageable pageable);
+
+    Page<Spu> findByTitleLike(String keyword, Pageable pageable);
 }

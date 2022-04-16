@@ -58,6 +58,15 @@ public class SpuController {
         return new PagingDozer<>(page, SpuPureVO.class);
     }
 
+    @GetMapping("/search")
+    public PagingDozer<Spu, SpuPureVO> search(@RequestParam String keyword,
+                                                     @RequestParam(defaultValue = "0") Integer start,
+                                                     @RequestParam(defaultValue = "10") Integer count){
+        PageCounter pageCounter = CommonUtil.convertToPageParameter(start, count);
+        Page<Spu> page = this.spuService.search(keyword, pageCounter.getPage(), pageCounter.getSize());
+        return new PagingDozer<>(page, SpuPureVO.class);
+    }
+
     @GetMapping("/explain")
     public List<SpuExplain> getSpuExplain(){
         return spuExplainService.getSpuExplain();

@@ -33,4 +33,9 @@ public class SpuService {
             return this.spuRepository.findByCategoryId(cid, page);
         }
     }
+
+    public Page<Spu> search(String keyword, Integer pageNum, Integer size) {
+        Pageable page = PageRequest.of(pageNum, size);
+        return this.spuRepository.findByTitleLike("%" + keyword + "%", page);
+    }
 }
