@@ -7,7 +7,7 @@ import org.hibernate.annotations.Where;
 @Setter
 @Getter
 @Where(clause = "delete_time is null")
-public class Spec {
+public class Spec extends BaseEntity{
     private Long keyId;
     private String key;
     private Long valueId;

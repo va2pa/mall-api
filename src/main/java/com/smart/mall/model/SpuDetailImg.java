@@ -12,7 +12,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Where(clause = "delete_time is null")
-public class SpuDetailImg {
+public class SpuDetailImg extends BaseEntity{
     @Id
     private Long id;
     private String img;

@@ -27,7 +27,7 @@ public class Coupon extends BaseEntity{
     private BigDecimal rate;
     //1.满减劵 2.折扣劵 3.无门槛劵 4.满金额折扣劵
     private Integer type;
-    private Integer activityId;
+    private Long activityId;
     private String remark;
     private Boolean wholeStore;
 

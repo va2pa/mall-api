@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 @Where(clause = "delete_time is null and online = 1")
-public class Sku {
+public class Sku extends BaseEntity{
     @Id
     private Long id;
     private BigDecimal price;
