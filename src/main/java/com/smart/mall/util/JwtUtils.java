@@ -37,7 +37,7 @@ public class JwtUtils {
     private static String makeToken(Long uid, Integer scope){
         Algorithm algorithm = Algorithm.HMAC256(JwtUtils.secretKey);
         // 根据时间差计算过期时间
-        Map<String,Date> timeMap = JwtUtils.calculateExpiredTime();
+        Map<String,Date> timeMap = JwtUtils.getExpiredTime();
         String jwt = JWT.create()
                 .withClaim("scope", scope)
                 .withIssuedAt(timeMap.get("now"))
@@ -74,7 +74,7 @@ public class JwtUtils {
         return true;
     }
 
-    private static Map<String,Date> calculateExpiredTime(){
+    private static Map<String,Date> getExpiredTime(){
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime();
         calendar.add(Calendar.SECOND, JwtUtils.expiredTime);
