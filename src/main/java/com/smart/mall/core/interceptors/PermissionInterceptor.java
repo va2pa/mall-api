@@ -6,9 +6,8 @@ import com.smart.mall.exception.http.ForbiddenException;
 import com.smart.mall.exception.http.UnAuthenticated;
 import com.smart.mall.model.User;
 import com.smart.mall.service.UserService;
-import com.smart.mall.util.JwtToken;
+import com.smart.mall.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -35,7 +34,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
             throw new UnAuthenticated(1004);
         }
         String token = bearerToken.split(" ")[1];
-        Map<String, Claim> claimMap = JwtToken.verifyAndGetClaims(token)
+        Map<String, Claim> claimMap = JwtUtils.verifyAndGetClaims(token)
                 .orElseThrow(() -> new UnAuthenticated(1004));
         //校验token权限是否大于api访问权限
         checkPermission(scopeLevel, claimMap);

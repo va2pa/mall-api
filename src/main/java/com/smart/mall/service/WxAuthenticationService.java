@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smart.mall.exception.http.ParameterException;
 import com.smart.mall.model.User;
 import com.smart.mall.repository.UserRepository;
-import com.smart.mall.util.JwtToken;
+import com.smart.mall.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class WxAuthenticationService {
             this.userRepository.save(user);
         }
         // 如果数据表中已存在该用户，就返回令牌（登录）
-        String token = JwtToken.getToken(user.getId());
+        String token = JwtUtils.getToken(user.getId());
         return token;
     }
 

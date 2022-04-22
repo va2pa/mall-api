@@ -20,8 +20,8 @@ spring:
 
 mall:
   security:
-    jwt-key: hellolitemall
-    token-expired-in: 86400000
+    token-expired-time: 86400000
+    secret-key: ThisIsASecretKeyForMall
   order:
     max-sku-limit: 9999
     pay-time-limit: 10
