@@ -1,6 +1,5 @@
 package com.smart.mall.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smart.mall.exception.http.ParameterException;
 import com.smart.mall.model.User;
@@ -21,48 +20,47 @@ public class WxAuthenticationService {
     private String appid;
     @Value("${wx.appsecret}")
     private String appsecret;
-    @Value("${wx.code2session}")
-    private String code2SessionUrl;
+    @Value("${wx.info-url}")
+    private String infoUrl;
     @Autowired
-    private ObjectMapper mapper;
+    private ObjectMapper objectMapper;
     @Autowired
     private UserRepository userRepository;
 
     public String registerOrLogin(String code){
-        Map<String, Object> session = code2session(code);
-        String openid = (String)session.get("openid");
+        // 使用code请求微信服务器换取openid（用户小程序唯一标识）
+        String openid = getOpenidByCode(code);
         if(openid == null){
             throw new ParameterException(5004);
         }
+        // 使用openid查询用户表中的用户
         User user = this.userRepository.findByOpenid(openid);
         if(user == null){
-            //register
+            // 如果用户表中不存在该openid对应的用户记录，就初始化user对象，并插入用户表中（注册）
             user = User.builder()
                     .openid(openid)
                     .build();
             this.userRepository.save(user);
-
         }
+        // 如果数据表中已存在该用户，就返回令牌（登录）
         String token = JwtToken.getToken(user.getId());
         return token;
     }
 
-    /**
-     * 利用code请求微信服务器获取包含openid的sessionMap
-     * @param code
-     * @return sessionMap
-     */
-    private Map<String, Object> code2session(String code){
-        String url = MessageFormat.format(this.code2SessionUrl, this.appid, this.appsecret, code);
-        RestTemplate rest = new RestTemplate();
-        String sessionText = rest.getForObject(url, String.class);
-        Map<String, Object> session = new HashMap<>();
+    private String getOpenidByCode(String code){
+        // 拼接url
+        String requestUrl = MessageFormat.format(this.infoUrl, this.appid, this.appsecret, code);
+        // 通过url发送请求获取包含openid的用户信息字符串
+        String infoStr = new RestTemplate().getForObject(requestUrl, String.class);
+        Map<String, Object> infoMap = new HashMap<>();
         try {
-            session = mapper.readValue(sessionText, Map.class);
-        } catch (JsonProcessingException e) {
+            //字符串转Map
+            infoMap = objectMapper.readValue(infoStr, Map.class);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return session;
+        // 返回Map中的openid项
+        return (String)infoMap.get("openid");
     }
 
 

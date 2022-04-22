@@ -1,8 +1,6 @@
 package com.smart.mall.web;
 
-import com.smart.mall.dto.TokenDTO;
-import com.smart.mall.dto.TokenGetDTO;
-import com.smart.mall.exception.http.NotFoundException;
+import com.smart.mall.dto.JwtDTO;
 import com.smart.mall.service.WxAuthenticationService;
 import com.smart.mall.util.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,29 +20,21 @@ public class TokenController {
     @Autowired
     private WxAuthenticationService wxAuthenticationService;
 
-    @PostMapping("/login")
-    public Map<String, String> getToken(@RequestBody @Validated TokenGetDTO userData){
-        Map<String, String> map = new HashMap<>();
-        String token = null;
-        switch (userData.getLoginType()){
-            case USER_WX:
-                token = wxAuthenticationService.registerOrLogin(userData.getAccount());
-                break;
-            case USER_EMAIL:
-                break;
-            default:
-                throw new NotFoundException(4010);
-        }
-        map.put("token", token);
-        return map;
+    @PostMapping("/verify")
+    public Map<String, Boolean> verify(@RequestBody JwtDTO jwtDTO){
+        Map<String, Boolean> resMap = new HashMap<>();
+        String token = jwtDTO.getToken();
+        boolean valid = JwtToken.verify(token);
+        resMap.put("is_valid", valid);
+        return resMap;
     }
 
-    @PostMapping("/verify")
-    public Map<String, Boolean> verify(@RequestBody TokenDTO tokenDTO){
-        String token = tokenDTO.getToken();
-        boolean valid = JwtToken.verify(token);
-        Map<String, Boolean> map = new HashMap<>();
-        map.put("is_valid", valid);
-        return map;
+    @PostMapping("/login")
+    public Map<String, String> getToken(@RequestBody @Validated JwtDTO jwtDTO){
+        Map<String, String> tokenMap = new HashMap<>();
+        String code = jwtDTO.getCode();
+        String token = wxAuthenticationService.registerOrLogin(code);
+        tokenMap.put("token", token);
+        return tokenMap;
     }
 }
