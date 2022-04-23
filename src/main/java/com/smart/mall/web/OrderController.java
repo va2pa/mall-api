@@ -24,7 +24,7 @@ public class OrderController {
     private OrderService orderService;
 
     @ScopeLevel
-    @PostMapping("")
+    @PostMapping("/place")
     public OrderIdVO placeOrder(@RequestBody OrderDTO orderDTO){
         long uid = LocalUser.getUser().getId();
         OrderCheck orderCheck = this.orderService.isOk(uid, orderDTO);

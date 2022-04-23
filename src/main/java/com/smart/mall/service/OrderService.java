@@ -130,6 +130,7 @@ public class OrderService {
             stringRedisTemplate.opsForValue().set(key,"",this.payTimeLimit, TimeUnit.SECONDS);
         }catch (Exception e){
             e.printStackTrace();
+            throw new RuntimeException();
         }
     }
 

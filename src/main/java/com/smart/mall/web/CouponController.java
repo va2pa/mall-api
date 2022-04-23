@@ -12,8 +12,11 @@ import com.smart.mall.vo.CouponPureVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.smart.mall.core.enumeration.CouponStatus.*;
 
 @RestController
 @RequestMapping("/coupon")
@@ -66,19 +69,17 @@ public class CouponController {
     @GetMapping("/myself/by/status/{status}")
     public List<CouponPureVO> getMyCouponByStatus(@PathVariable Integer status){
         Long uid = LocalUser.getUser().getId();
-        List<Coupon> couponList;
-        switch (CouponStatus.toType(status)){
-            case AVAILABLE:
-                couponList = this.couponService.getMyAvailableCoupons(uid);
-                break;
-            case USED:
-                couponList = this.couponService.getMyUsedCoupons(uid);
-                break;
-            case EXPIRED:
-                couponList = this.couponService.getMyExpiredCoupons(uid);
-                break;
-            default:
-                throw new ParameterException(6012);
+        List<Coupon> couponList = new ArrayList<>();
+        CouponStatus couponStatus = CouponStatus.toType(status);
+        if (couponStatus == null){
+            throw new ParameterException(6012);
+        }
+        if(CouponStatus.toType(status).equals(AVAILABLE)){
+            couponList = this.couponService.getMyAvailableCoupons(uid);
+        }else if(CouponStatus.toType(status).equals(USED)){
+            couponList = this.couponService.getMyUsedCoupons(uid);
+        }else if(CouponStatus.toType(status).equals(EXPIRED)){
+            couponList = this.couponService.getMyExpiredCoupons(uid);
         }
         return CouponPureVO.getList(couponList);
     }

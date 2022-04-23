@@ -59,6 +59,7 @@ public class OrderCheck {
     }
 
     public void isOk(){
+        this.orderSkuCountIsOk();
         BigDecimal serverTotalPrice = new BigDecimal("0");
         List<SkuOrderBO> skuOrderBOList = new ArrayList<>();
         //保证列表遍历时前后端对应同一个sku
@@ -88,6 +89,12 @@ public class OrderCheck {
             this.couponCheck.inTimeLine();
             this.couponCheck.canBeUsed(skuOrderBOList, serverTotalPrice);
             this.couponCheck.finalTotalPriceIsOk(this.orderDTO.getFinalTotalPrice(), serverTotalPrice);
+        }
+    }
+
+    private void orderSkuCountIsOk(){
+        if(this.serverSkuList.size() <= 0){
+            throw new ParameterException(7003);
         }
     }
 
