@@ -5,7 +5,6 @@ import com.smart.mall.core.enumeration.CouponStatus;
 import com.smart.mall.core.enumeration.OrderStatus;
 import com.smart.mall.exception.http.NotFoundException;
 import com.smart.mall.exception.http.ParameterException;
-import com.smart.mall.exception.http.ServerErrorException;
 import com.smart.mall.model.Activity;
 import com.smart.mall.model.Coupon;
 import com.smart.mall.model.Order;
@@ -43,8 +42,8 @@ public class CouponService {
         }
         Order order = orderRepository.findFirstByIdAndUserId(oid, uid)
                 .orElseThrow(() -> new RuntimeException());
-        if (order.getStatus().equals(OrderStatus.UNPAID.value())
-            || order.getStatus().equals(OrderStatus.CANCELED.value())){
+        if (order.getStatus().equals(OrderStatus.UNPAID.getValue())
+            || order.getStatus().equals(OrderStatus.CANCELED.getValue())){
             this.userCouponRepository.returnBack(couponId, uid);
         }
     }

@@ -13,11 +13,13 @@ public class SkuOrderBO {
     private BigDecimal actualPrice;     //商品有折扣则折扣价
     private Integer count;
     private Long categoryId;
+    private Long rootCategoryId;
 
     public SkuOrderBO(Sku sku, SkuInfoDTO skuInfoDTO){
         this.actualPrice = sku.getActualPrice();
         this.count = skuInfoDTO.getCount();
         this.categoryId = sku.getCategoryId();
+        this.rootCategoryId = sku.getRootCategoryId();
     }
 
     public BigDecimal getTotalPrice(){

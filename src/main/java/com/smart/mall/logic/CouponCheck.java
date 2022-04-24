@@ -102,7 +102,8 @@ public class CouponCheck {
         BigDecimal orderCategoryMoney = new BigDecimal("0");
         for (SkuOrderBO skuOrderBO : skuOrderBOList) {
             for (Category category : coupon.getCategoryList()) {
-                if (skuOrderBO.getCategoryId().equals(category.getId())){
+                if (skuOrderBO.getCategoryId().equals(category.getId())
+                    || skuOrderBO.getRootCategoryId().equals(category.getId())){
                     orderCategoryMoney = orderCategoryMoney.add(skuOrderBO.getTotalPrice());
                     break;
                 }

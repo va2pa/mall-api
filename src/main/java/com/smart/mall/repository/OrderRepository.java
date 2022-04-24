@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
@@ -26,4 +27,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "where o.status = 1\n" +
             "and o.id = :oid")
     int cancelOrder(Long oid);
+
+    @Transactional
+    @Modifying
+    @Query("update Order o \n" +
+            "set o.status = :status \n" +
+            "where o.id = :oid")
+    int updateOrderStatus(Long oid, Integer status);
 }

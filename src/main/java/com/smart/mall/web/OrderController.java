@@ -17,22 +17,28 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.smart.mall.core.enumeration.AccessLevel.LOGIN_USER;
+
 @RestController
 @RequestMapping("/order")
 public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @ScopeLevel
+    @ScopeLevel(LOGIN_USER)
     @PostMapping("/place")
     public OrderIdVO placeOrder(@RequestBody OrderDTO orderDTO){
         long uid = LocalUser.getUser().getId();
+        // 校验orderDTO数据是否合法（与数据库对比）
         OrderCheck orderCheck = this.orderService.isOk(uid, orderDTO);
         Long orderId = this.orderService.placeOrder(uid, orderDTO, orderCheck);
         return new OrderIdVO(orderId);
     }
 
-    @ScopeLevel
+    @ScopeLevel(LOGIN_USER)
     @GetMapping("/status/unpaid")
     public PagingDozer<Order, OrderPureVO> getUnpaid(@RequestParam(defaultValue = "0") Integer start,
                                                      @RequestParam(defaultValue = "10") Integer count){
@@ -49,7 +55,7 @@ public class OrderController {
      * @param count
      * @return
      */
-    @ScopeLevel
+    @ScopeLevel(LOGIN_USER)
     @GetMapping("by/status/{status}")
     public PagingDozer<Order, OrderPureVO> getByStatus(@PathVariable Integer status,
                                                      @RequestParam(defaultValue = "0") Integer start,
@@ -60,11 +66,20 @@ public class OrderController {
         return new PagingDozer<>(orderPage, OrderPureVO.class);
     }
 
-    @ScopeLevel
+    @ScopeLevel(LOGIN_USER)
     @GetMapping("/detail/{oid}")
     public Order getDetail(@PathVariable Long oid){
         Long uid = LocalUser.getUser().getId();
         return this.orderService.getDetail(oid, uid)
                 .orElseThrow(() -> new ParameterException(4014));
+    }
+
+    @ScopeLevel(LOGIN_USER)
+    @PostMapping("/fakepay/{oid}")
+    public Map<String, String> placeOrder(@PathVariable Long oid){
+        this.orderService.fakePay(oid);
+        Map<String, String> map = new HashMap<>();
+        map.put("fakepay","success");
+        return map;
     }
 }

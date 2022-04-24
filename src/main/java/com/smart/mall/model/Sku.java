@@ -9,6 +9,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,9 @@ public class Sku extends BaseEntity{
 
     @JsonIgnore
     public List<String> getSpecValueList() {
+        if(this.getSpecs() == null){
+            return Collections.emptyList();
+        }
         return this.getSpecs().stream()
                 .map(Spec::getValue)
                 .collect(Collectors.toList());

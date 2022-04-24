@@ -11,10 +11,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static com.smart.mall.core.enumeration.AccessLevel.LOGIN_USER;
+
 @Component
 public class JwtUtils {
     private static String secretKey;
-    private static Integer defaultScope = 7;
+    private static Integer defaultScope = LOGIN_USER;
     private static Integer expiredTime;
 
     @Value("${mall.security.secret-key}")

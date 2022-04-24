@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.smart.mall.core.enumeration.AccessLevel.LOGIN_USER;
 import static com.smart.mall.core.enumeration.CouponStatus.*;
 
 @RestController
@@ -49,7 +50,7 @@ public class CouponController {
      * 领取优惠劵
      * @param couponId
      */
-    @ScopeLevel
+    @ScopeLevel(LOGIN_USER)
     @PostMapping("/collect/{couponId}")
     public void collectCoupon(@PathVariable Long couponId){
         Long uid = LocalUser.getUser().getId();
@@ -65,7 +66,7 @@ public class CouponController {
      * @param status
      * @return
      */
-    @ScopeLevel
+    @ScopeLevel(LOGIN_USER)
     @GetMapping("/myself/by/status/{status}")
     public List<CouponPureVO> getMyCouponByStatus(@PathVariable Integer status){
         Long uid = LocalUser.getUser().getId();
@@ -89,7 +90,7 @@ public class CouponController {
      * 应用于订单结算页面选择可用优惠劵
      * @return
      */
-    @ScopeLevel
+    @ScopeLevel(LOGIN_USER)
     @GetMapping("/myself/available/with_category")
     public List<CouponCategoryVO> getAvailableWithCategory(){
         Long uid = LocalUser.getUser().getId();

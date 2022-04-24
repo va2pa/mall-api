@@ -1,6 +1,5 @@
 package com.smart.mall.service;
 
-import com.smart.mall.bo.OrderMessageBO;
 import com.smart.mall.core.enumeration.OrderStatus;
 import com.smart.mall.core.money.MoneyDiscount;
 import com.smart.mall.dto.OrderDTO;
@@ -33,6 +32,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static com.smart.mall.core.enumeration.OrderStatus.PAID;
 
 @Service
 public class OrderService {
@@ -79,11 +80,11 @@ public class OrderService {
     }
 
     public Page<Order> getByStatus(Integer status, Integer page, Integer size, Long uid){
-        if (status == OrderStatus.UNPAID.value() ||status == OrderStatus.CANCELED.value()){
+        if (status == OrderStatus.UNPAID.getValue() ||status == OrderStatus.CANCELED.getValue()){
             throw new ParameterException(7010);
         }
         Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
-        if (status == OrderStatus.All.value()){
+        if (status == OrderStatus.All.getValue()){
             return orderRepository.findByUserId(uid, pageable);
         }
         return orderRepository.findByStatusAndUserId(status, uid, pageable);
@@ -92,11 +93,12 @@ public class OrderService {
     public Page<Order> getUnpaid(Integer page, Integer size, Long uid){
         Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
         return orderRepository.findByStatusAndExpiredTimeGreaterThanAndUserId(
-                OrderStatus.UNPAID.value(),new Date(), uid, pageable);
+                OrderStatus.UNPAID.getValue(),new Date(), uid, pageable);
     }
 
     @Transactional
     public Long placeOrder(long uid, OrderDTO orderDTO, OrderCheck orderCheck) {
+        // 此时传入的orderDTO已通过校验
         Calendar now = Calendar.getInstance();
         Calendar expireTime = (Calendar)now.clone();
         expireTime.add(Calendar.SECOND, this.payTimeLimit);
@@ -104,10 +106,11 @@ public class OrderService {
                 .orderNo(OrderUtil.makeOrderNo())
                 .userId(uid)
                 .totalPrice(orderDTO.getTotalPrice())
+                .finalTotalPrice(orderDTO.getFinalTotalPrice())
                 .totalCount(orderCheck.getTotalCount().longValue())
                 .snapImg(orderCheck.getSnapImg())
                 .snapTitle(orderCheck.getSnapTitle())
-                .status(OrderStatus.UNPAID.value())
+                .status(OrderStatus.UNPAID.getValue())
                 .placedTime(now.getTime())
                 .expiredTime(expireTime.getTime())
                 .build();
@@ -120,7 +123,7 @@ public class OrderService {
             writeOffCoupon(orderDTO.getCouponId(), uid, order.getId());
             couponId = orderDTO.getCouponId();
         }
-        sendToRedis(order.getId(), uid, couponId);
+//        sendToRedis(order.getId(), uid, couponId);
         return order.getId();
     }
 
@@ -171,5 +174,9 @@ public class OrderService {
                 orderDTO, skuList, couponCheck,  this.maxSkuLimit);
         orderCheck.isOk();
         return orderCheck;
+    }
+
+    public void fakePay(Long oid) {
+        this.orderRepository.updateOrderStatus(oid, PAID.getValue());
     }
 }
