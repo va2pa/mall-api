@@ -96,6 +96,11 @@ public class OrderService {
                 OrderStatus.UNPAID.getValue(),new Date(), uid, pageable);
     }
 
+    public Page<Order> getCanceled(Integer page, Integer size, Long uid) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
+        return orderRepository.findMyExpired(uid, new Date(), pageable);
+    }
+
     @Transactional
     public Long placeOrder(long uid, OrderDTO orderDTO, OrderCheck orderCheck) {
         // 此时传入的orderDTO已通过校验
@@ -123,7 +128,7 @@ public class OrderService {
             writeOffCoupon(orderDTO.getCouponId(), uid, order.getId());
             couponId = orderDTO.getCouponId();
         }
-//        sendToRedis(order.getId(), uid, couponId);
+        sendToRedis(order.getId(), uid, couponId);
         return order.getId();
     }
 
@@ -179,4 +184,6 @@ public class OrderService {
     public void fakePay(Long oid) {
         this.orderRepository.updateOrderStatus(oid, PAID.getValue());
     }
+
+
 }

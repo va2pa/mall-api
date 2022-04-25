@@ -1,5 +1,6 @@
 package com.smart.mall.repository;
 
+import com.smart.mall.model.Coupon;
 import com.smart.mall.model.Order;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -34,4 +36,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "set o.status = :status \n" +
             "where o.id = :oid")
     int updateOrderStatus(Long oid, Integer status);
+
+    @Query("select o from Order o\n" +
+            "where o.userId = :uid\n" +
+            "and o.status <> 2\n" +
+            "and o.status <> 3\n" +
+            "and o.status <> 4\n" +
+            "and o.expiredTime < :now")
+    Page<Order> findMyExpired(Long uid, Date now, Pageable pageable);
 }

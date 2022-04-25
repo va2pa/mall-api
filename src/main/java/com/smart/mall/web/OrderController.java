@@ -48,6 +48,16 @@ public class OrderController {
         return new PagingDozer<>(orderPage, OrderPureVO.class);
     }
 
+    @ScopeLevel(LOGIN_USER)
+    @GetMapping("/status/canceled")
+    public PagingDozer<Order, OrderPureVO> getCanceled(@RequestParam(defaultValue = "0") Integer start,
+                                                     @RequestParam(defaultValue = "10") Integer count){
+        PageCounter pageCounter = CommonUtil.convertToPageParameter(start, count);
+        Long uid = LocalUser.getUser().getId();
+        Page<Order> orderPage = this.orderService.getCanceled(pageCounter.getPage(), pageCounter.getSize(), uid);
+        return new PagingDozer<>(orderPage, OrderPureVO.class);
+    }
+
     /**
      * 查询全部、已支付、已发货、已完成订单
      * @param status
