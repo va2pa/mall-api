@@ -33,7 +33,12 @@ public class PermissionInterceptor implements HandlerInterceptor {
         if (!StringUtils.hasLength(bearerToken) || !bearerToken.startsWith("Bearer")){
             throw new UnAuthenticated(1004);
         }
-        String token = bearerToken.split(" ")[1];
+        String token;
+        try{
+            token = bearerToken.split(" ")[1];
+        }catch (ArrayIndexOutOfBoundsException e){
+            throw new UnAuthenticated(1006);
+        }
         Map<String, Claim> claimMap = JwtUtils.verifyAndGetClaims(token)
                 .orElseThrow(() -> new UnAuthenticated(1004));
         //校验token权限是否大于api访问权限

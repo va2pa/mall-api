@@ -26,3 +26,5 @@ mall:
     max-sku-limit: 9999
     pay-time-limit: 60
     year-codes: A,B,C,D,E,F,G,H,I
+  user:
+    vip-threshold: 500

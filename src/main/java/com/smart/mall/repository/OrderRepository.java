@@ -44,4 +44,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "and o.status <> 4\n" +
             "and o.expiredTime < :now")
     Page<Order> findMyExpired(Long uid, Date now, Pageable pageable);
+
+    @Query(value = "select * from `order` o\n" +
+            "where o.user_id = :uid\n" +
+            "and o.status <> 1\n" +
+            "and o.status <> 5\n" +
+            "and o.final_total_price >= :vipThreshold \n" +
+            "limit 1", nativeQuery = true)
+    Order findFirstFinalTotalPriceGreaterThan(Long uid, Long vipThreshold);
 }

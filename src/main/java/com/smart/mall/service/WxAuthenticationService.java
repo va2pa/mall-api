@@ -1,6 +1,7 @@
 package com.smart.mall.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.smart.mall.core.enumeration.AccessLevel;
 import com.smart.mall.exception.http.ParameterException;
 import com.smart.mall.model.User;
 import com.smart.mall.repository.UserRepository;
@@ -39,11 +40,12 @@ public class WxAuthenticationService {
             // 如果用户表中不存在该openid对应的用户记录，就初始化user对象，并插入用户表中（注册）
             user = User.builder()
                     .openid(openid)
+                    .level(AccessLevel.LOGIN_USER)
                     .build();
             this.userRepository.save(user);
         }
         // 如果数据表中已存在该用户，就返回令牌（登录）
-        String token = JwtUtils.getToken(user.getId());
+        String token = JwtUtils.getToken(user.getId(), user.getLevel());
         return token;
     }
 

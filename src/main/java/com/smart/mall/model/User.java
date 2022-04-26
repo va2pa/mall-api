@@ -28,6 +28,6 @@ public class User extends BaseEntity{
     private String mobile;
     @Convert(converter = MapAndJson.class)
     private Map<String, Object> wxProfile;
-
+    private Integer level;
 
 }
