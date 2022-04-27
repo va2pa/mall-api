@@ -79,4 +79,9 @@ public class SpuService {
         UserSpu userSpu = this.userSpuRepository.findFirstByUserIdAndSpuId(uid, id);
         return userSpu != null;
     }
+
+    public Page<Spu> getMyFavSpuList(Long uid, Integer pageNum, Integer size){
+        Pageable page = PageRequest.of(pageNum, size);
+        return this.spuRepository.findSpuListByUserId(uid, page);
+    }
 }

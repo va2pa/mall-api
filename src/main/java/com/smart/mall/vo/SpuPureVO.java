@@ -20,7 +20,6 @@ public class SpuPureVO {
     private String img;
     private String discountPrice;
     private String description;
-    private String tags;
     private String forThemeImg;
 
     public SpuPureVO(Spu spu){

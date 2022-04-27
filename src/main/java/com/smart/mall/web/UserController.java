@@ -3,6 +3,7 @@ package com.smart.mall.web;
 import com.smart.mall.core.LocalUser;
 import com.smart.mall.core.UnifyResponse;
 import com.smart.mall.core.interceptors.ScopeLevel;
+import com.smart.mall.model.Spu;
 import com.smart.mall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.smart.mall.core.enumeration.AccessLevel.LOGIN_USER;

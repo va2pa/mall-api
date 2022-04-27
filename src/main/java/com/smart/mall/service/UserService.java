@@ -3,12 +3,15 @@ package com.smart.mall.service;
 import com.smart.mall.core.enumeration.AccessLevel;
 import com.smart.mall.exception.http.ParameterException;
 import com.smart.mall.model.Order;
+import com.smart.mall.model.Spu;
 import com.smart.mall.model.User;
 import com.smart.mall.repository.OrderRepository;
 import com.smart.mall.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {

@@ -104,4 +104,15 @@ public class SpuController {
         map.put("is_like", isLike);
         return map;
     }
+
+    @ScopeLevel(LOGIN_USER)
+    @GetMapping("/myself/favor")
+    public PagingDozer<Spu, SpuPureVO> getMyFavSpuList(@RequestParam(defaultValue = "0") Integer start,
+                                     @RequestParam(defaultValue = "10") Integer count){
+        PageCounter pageCounter = CommonUtil.convertToPageParameter(start, count);
+
+        Long uid = LocalUser.getUser().getId();
+        Page<Spu> page = this.spuService.getMyFavSpuList(uid, pageCounter.getPage(), pageCounter.getSize());
+        return new PagingDozer<>(page, SpuPureVO.class);
+    }
 }

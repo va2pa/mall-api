@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface SpuRepository extends JpaRepository<Spu, Long> {
     Spu findOneById(Long id);
 
@@ -28,4 +30,10 @@ public interface SpuRepository extends JpaRepository<Spu, Long> {
             "where s.id = :sid\n" +
             "and s.favorNum > 0")
     int decreaseFavorNum(Long sid);
+
+    @Query("select s from Spu s\n" +
+            "join UserSpu us \n" +
+            "on us.spuId = s.id\n" +
+            "where us.userId = :uid")
+    Page<Spu> findSpuListByUserId(Long uid, Pageable pageable);
 }

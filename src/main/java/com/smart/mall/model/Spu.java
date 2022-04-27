@@ -28,7 +28,6 @@ public class Spu extends BaseEntity{
     private String img;
     private String discountPrice;
     private String description;
-    private String tags;
     private Long favorNum;
     private String forThemeImg;
 
