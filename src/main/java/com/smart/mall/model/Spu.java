@@ -29,7 +29,7 @@ public class Spu extends BaseEntity{
     private String discountPrice;
     private String description;
     private String tags;
-    private Boolean isTest;
+    private Long favorNum;
     private String forThemeImg;
 
     @OneToMany

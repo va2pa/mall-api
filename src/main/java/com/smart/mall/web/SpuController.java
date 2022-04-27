@@ -3,6 +3,9 @@ package com.smart.mall.web;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 import com.smart.mall.bo.PageCounter;
+import com.smart.mall.core.LocalUser;
+import com.smart.mall.core.UnifyResponse;
+import com.smart.mall.core.interceptors.ScopeLevel;
 import com.smart.mall.exception.http.NotFoundException;
 import com.smart.mall.model.Banner;
 import com.smart.mall.model.Spu;
@@ -21,7 +24,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.smart.mall.core.enumeration.AccessLevel.LOGIN_USER;
 
 @RestController
 @RequestMapping("/spu")
@@ -70,5 +77,31 @@ public class SpuController {
     @GetMapping("/explain")
     public List<SpuExplain> getSpuExplain(){
         return spuExplainService.getSpuExplain();
+    }
+
+    @ScopeLevel(LOGIN_USER)
+    @PostMapping("/id/{id}/like")
+    public void like(@PathVariable Long id){
+        Long uid = LocalUser.getUser().getId();
+        this.spuService.like(uid, id);
+        UnifyResponse.updateSuccess();
+    }
+
+    @ScopeLevel(LOGIN_USER)
+    @PostMapping("/id/{id}/disLike")
+    public void disLike(@PathVariable Long id){
+        Long uid = LocalUser.getUser().getId();
+        this.spuService.disLike(uid, id);
+        UnifyResponse.updateSuccess();
+    }
+
+    @ScopeLevel(LOGIN_USER)
+    @GetMapping("/id/{id}/isLike")
+    public Map<String, Boolean> isLike(@PathVariable Long id){
+        Long uid = LocalUser.getUser().getId();
+        boolean isLike = this.spuService.isLike(uid, id);
+        Map<String, Boolean> map = new HashMap<>();
+        map.put("is_like", isLike);
+        return map;
     }
 }

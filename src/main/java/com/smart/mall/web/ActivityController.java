@@ -34,11 +34,4 @@ public class ActivityController {
         return new ActivityCouponVO(activity);
     }
 
-    @ScopeLevel(VIP)
-    @GetMapping("/name/{name}/with_coupon/vip")
-    public ActivityPureVO getVipActivityWithCoupon(@PathVariable String name){
-        Activity activity = this.activityService.getByName(name)
-                .orElseThrow(() -> new NotFoundException(4012));
-        return new ActivityCouponVO(activity);
-    }
 }
