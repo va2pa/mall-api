@@ -25,7 +25,6 @@ public class Activity extends BaseEntity{
     private String remark;
     private Boolean online;
     private String entranceImg;
-    private String internalTopImg;
     private String name;
 
     @OneToMany

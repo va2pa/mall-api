@@ -1,16 +1,12 @@
 package com.smart.mall.web;
 
-import com.github.dozermapper.core.DozerBeanMapperBuilder;
-import com.github.dozermapper.core.Mapper;
 import com.smart.mall.bo.PageCounter;
 import com.smart.mall.core.LocalUser;
 import com.smart.mall.core.UnifyResponse;
 import com.smart.mall.core.interceptors.ScopeLevel;
 import com.smart.mall.exception.http.NotFoundException;
-import com.smart.mall.model.Banner;
 import com.smart.mall.model.Spu;
 import com.smart.mall.model.SpuExplain;
-import com.smart.mall.service.BannerService;
 import com.smart.mall.service.SpuExplainService;
 import com.smart.mall.service.SpuService;
 import com.smart.mall.util.CommonUtil;

@@ -23,7 +23,6 @@ public class Category extends BaseEntity{
     private String img;
     private Long index;
     private Long online;
-    private Long level;
 
     @ManyToMany
     @JoinTable(name = "coupon_category",

@@ -23,9 +23,7 @@ public class User extends BaseEntity{
     private Long id;
     private String openid;
     private String nickname;
-    private Long unifyUid;
     private String email;
-    private String password;
     private String mobile;
     @Convert(converter = MapAndJson.class)
     private Map<String, Object> wxProfile;

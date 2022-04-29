@@ -29,7 +29,6 @@ public class Spu extends BaseEntity{
     private String discountPrice;
     private String description;
     private Long favorNum;
-    private String forThemeImg;
 
     @OneToMany
     @JoinColumn(name = "spuId")
