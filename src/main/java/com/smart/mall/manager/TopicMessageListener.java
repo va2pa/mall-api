@@ -18,14 +18,7 @@ public class TopicMessageListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         byte[] body = message.getBody();
-        byte[] channel = message.getChannel();
-
         String expiredKey = new String(body);
-        String topic = new String(channel);
-//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//        System.out.println(expiredKey);
-//        System.out.println(topic);
-//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         OrderMessageBO orderMessageBO = new OrderMessageBO(expiredKey);
         this.orderService.cancel(orderMessageBO.getOrderId());
         this.couponService.returnBack(orderMessageBO);

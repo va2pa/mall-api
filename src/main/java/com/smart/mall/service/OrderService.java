@@ -62,14 +62,18 @@ public class OrderService {
     @Transactional
     public void cancel(long oid) {
         if(oid <= 0){
+            // mall.codes[4016] = 订单号异常
             throw new ServerErrorException(4016);
         }
+        // 判断订单是否存在于数据库
         Order order = orderRepository.findById(oid)
                 .orElseThrow(() -> new ServerErrorException(4016));
         int res = orderRepository.cancelOrder(oid);
         if(res != 1){
+            // 修改订单状态失败（已支付）
             return;
         }
+        // 遍历每个sku归还库存
         order.getSnapItems().forEach(s -> {
             skuRepository.recoverStock(s.getId(),s.getCount().longValue());
         });
@@ -103,10 +107,12 @@ public class OrderService {
 
     @Transactional
     public Long placeOrder(long uid, OrderDTO orderDTO, OrderCheck orderCheck) {
-        // 此时传入的orderDTO已通过校验
+        // 此时orderDTO已在orderController通过校验
         Calendar now = Calendar.getInstance();
         Calendar expireTime = (Calendar)now.clone();
+        // 计算过期时间
         expireTime.add(Calendar.SECOND, this.payTimeLimit);
+        // 创建订单模型
         Order order = Order.builder()
                 .orderNo(OrderUtil.makeOrderNo())
                 .userId(uid)
@@ -121,14 +127,19 @@ public class OrderService {
                 .build();
         order.setSnapAddress(orderDTO.getAddress());
         order.setSnapItems(orderCheck.getOrderSkuList());
+        // 将新的订单插入到数据库
         orderRepository.save(order);
+        // 扣减订单中的sku的库存
         reduceStock(orderCheck.getOrderSkuList());
         long couponId = -1;
         if (orderDTO.getCouponId() != null){
+            // 如果该笔订单使用了优惠券，则进行优惠券校验
             writeOffCoupon(orderDTO.getCouponId(), uid, order.getId());
             couponId = orderDTO.getCouponId();
         }
+        // 将订单信息保存到redis
         sendToRedis(order.getId(), uid, couponId);
+        // 返回订单ID
         return order.getId();
     }
 

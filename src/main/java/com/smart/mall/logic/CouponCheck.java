@@ -74,17 +74,23 @@ public class CouponCheck {
      * @param serverTotalPrice
      */
     public void canBeUsed(List<SkuOrderBO> skuOrderBOList, BigDecimal serverTotalPrice){
+        // 先计算出订单中优惠券适用的商品总金额
         BigDecimal orderCategoryMoney = getOrderCategoryMoney(skuOrderBOList, serverTotalPrice);
         switch (CouponType.toType(this.coupon.getType())){
             case FULL_OFF:
             case FULL_MINUS:
+                // 优惠券类型是满减券或满减折扣券，如果门槛金额大于订单适用金额，则抛出异常提示
                 if(this.coupon.getFullMoney().compareTo(orderCategoryMoney) > 0){
+                    // mall.codes[7008] = 商品金额未达到优惠劵使用门槛
                     throw new ParameterException(7008);
                 }
                 break;
+                // 优惠券类型是无门槛券，则跳出，表示可以适用
             case NO_THRESHOLD_MINUS:
                 break;
+                // 系统中没有找到前端传来的优惠券类型，则抛出异常提示
             default:
+                // mall.codes[6005] = 该类型优惠劵不存在
                 throw new ParameterException(6005);
         }
     }
@@ -97,14 +103,19 @@ public class CouponCheck {
      */
     private BigDecimal getOrderCategoryMoney(List<SkuOrderBO> skuOrderBOList, BigDecimal serverTotalPrice){
         if (coupon.getWholeStore()){
+            // 通用券（无视分类）直接返回订单总价
             return serverTotalPrice;
         }
         BigDecimal orderCategoryMoney = new BigDecimal("0");
+        // 遍历订单中所有sku
         for (SkuOrderBO skuOrderBO : skuOrderBOList) {
+            // 遍历优惠券使用的所有分类
             for (Category category : coupon.getCategoryList()) {
                 if (skuOrderBO.getCategoryId().equals(category.getId())
                     || skuOrderBO.getRootCategoryId().equals(category.getId())){
+                    // 如果当前sku的二级分类或根分类与当前优惠券适用分类相同，则累加该sku价格
                     orderCategoryMoney = orderCategoryMoney.add(skuOrderBO.getTotalPrice());
+                    // 跳出当前循环，遍历下一个sku
                     break;
                 }
             }

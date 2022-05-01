@@ -38,12 +38,15 @@ public class CouponService {
         Long uid = orderMessageBO.getUserId();
         Long couponId = orderMessageBO.getCouponId();
         if (couponId == -1){
+            // redis推送的消息体不包含优惠券ID，则不用归还优惠券
             return;
         }
+        // 判断订单是否存在于数据库
         Order order = orderRepository.findFirstByIdAndUserId(oid, uid)
                 .orElseThrow(() -> new RuntimeException());
         if (order.getStatus().equals(OrderStatus.UNPAID.getValue())
             || order.getStatus().equals(OrderStatus.CANCELED.getValue())){
+            // 如果订单状态为未支付或已取消（归还库存时修改），则归还优惠券
             this.userCouponRepository.returnBack(couponId, uid);
         }
     }
