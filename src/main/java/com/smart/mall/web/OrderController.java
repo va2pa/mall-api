@@ -86,7 +86,7 @@ public class OrderController {
 
     @ScopeLevel(LOGIN_USER)
     @PostMapping("/fakepay/{oid}")
-    public Map<String, String> placeOrder(@PathVariable Long oid){
+    public Map<String, String> payOrder(@PathVariable Long oid){
         this.orderService.fakePay(oid);
         Map<String, String> map = new HashMap<>();
         map.put("fakepay","success");

@@ -74,7 +74,7 @@ public class OrderCheck {
             SkuInfoDTO skuInfoDTO = this.orderDTO.getSkuInfoList().get(i);
             skuNotOnSale();
             this.skuNotOnSale();
-            this.containsSoldOutSku(sku);
+            this.soldOutSku(sku);
             this.beyondSkuStock(skuInfoDTO, sku);
             this.beyondSkuMaxLimit(skuInfoDTO);
             //为couponCheck准备数据
@@ -115,7 +115,7 @@ public class OrderCheck {
         }
     }
 
-    private void containsSoldOutSku(Sku sku){
+    private void soldOutSku(Sku sku){
         if (sku.getStock() <= 0){
             throw new ParameterException(7506);
         }
